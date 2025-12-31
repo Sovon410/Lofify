@@ -1,0 +1,1191 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lofify - Lo-Fi Music Creator with Reverb &amp; 3D Effects</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <!-- Floating Orbs Background - Dynamically Generated -->
+    <div class="background-orbs" id="backgroundOrbs"></div>
+    <!-- Copyright Notice Banner -->
+    <div class="copyright-banner" id="copyrightBanner">
+        <div class="container">
+            <div class="copyright-banner-content">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="M12 8v4" />
+                    <line x1="12" y1="16" x2="12.01" y2="16" />
+                </svg>
+                <span>⚠️ Ensure you have the right to use uploaded audio</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <svg class="logo-icon vinyl-logo" width="40" height="40" viewBox="0 0 100 100" fill="none"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <linearGradient id="vinylGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#00d9ff;stop-opacity:1" />
+                                <stop offset="50%" style="stop-color:#a855f7;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#ff006e;stop-opacity:1" />
+                            </linearGradient>
+                            <linearGradient id="centerGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#00d9ff;stop-opacity:0.8" />
+                                <stop offset="100%" style="stop-color:#a855f7;stop-opacity:0.8" />
+                            </linearGradient>
+                            <filter id="vinylGlow">
+                                <feGaussianBlur stdDeviation="2" result="coloredBlur" />
+                                <feMerge>
+                                    <feMergeNode in="coloredBlur" />
+                                    <feMergeNode in="SourceGraphic" />
+                                </feMerge>
+                            </filter>
+                        </defs>
+                        <!-- Main vinyl circle -->
+                        <circle cx="50" cy="50" r="40" fill="#1a1a2e" stroke="#00d9ff" stroke-width="2"
+                            filter="url(#vinylGlow)" />
+                        <!-- Expanding vinyl rings -->
+                        <circle class="vinyl-ring vinyl-ring-outer" cx="50" cy="50" r="35" stroke="#00d9ff"
+                            stroke-width="1.5" fill="none" opacity="0.6" />
+                        <circle class="vinyl-ring vinyl-ring-middle" cx="50" cy="50" r="28" stroke="#a855f7"
+                            stroke-width="1.5" fill="none" opacity="0.6" />
+                        <circle class="vinyl-ring vinyl-ring-inner" cx="50" cy="50" r="22" stroke="#ff006e"
+                            stroke-width="1.5" fill="none" opacity="0.6" />
+                        <!-- Center label -->
+                        <circle cx="50" cy="50" r="12" fill="url(#centerGradient)" filter="url(#vinylGlow)" />
+                        <!-- Soundwaves emanating from vinyl -->
+                        <g class="soundwaves" opacity="0.8">
+                            <path class="soundwave soundwave-top" d="M 50 10 Q 45 20 50 30" stroke="#00d9ff"
+                                stroke-width="2" fill="none" stroke-linecap="round" />
+                            <path class="soundwave soundwave-left" d="M 20 50 Q 30 45 40 50" stroke="#a855f7"
+                                stroke-width="2" fill="none" stroke-linecap="round" />
+                            <path class="soundwave soundwave-bottom" d="M 50 70 Q 55 80 50 90" stroke="#ff006e"
+                                stroke-width="2" fill="none" stroke-linecap="round" />
+                        </g>
+                        <!-- Rotating outer ring -->
+                        <circle class="vinyl-rotating-ring" cx="50" cy="50" r="38" stroke="url(#vinylGradient)"
+                            stroke-width="2" fill="none" stroke-dasharray="10 5" filter="url(#vinylGlow)" />
+                    </svg>
+                    <span class="logo-text">Lofify</span>
+                </div>
+                <div class="header-actions">
+                    <button class="btn-icon" id="helpBtn" title="Keyboard shortcuts">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <circle cx="12" cy="12" r="10" />
+                            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+                            <line x1="12" y1="17" x2="12.01" y2="17" />
+                        </svg>
+                    </button>
+                    <button class="btn-icon" id="themeToggle" title="Toggle theme">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <circle cx="12" cy="12" r="5" />
+                            <line x1="12" y1="1" x2="12" y2="3" />
+                            <line x1="12" y1="21" x2="12" y2="23" />
+                            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+                            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+                            <line x1="1" y1="12" x2="3" y2="12" />
+                            <line x1="21" y1="12" x2="23" y2="12" />
+                            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+                            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="container">
+            <!-- Hero Section -->
+            <section class="hero" id="heroSection">
+                <h1 class="hero-title">Create Beautiful Lo-Fi Music with Lofify</h1>
+                <p class="hero-description">Slow down your favorite songs, add reverb, and apply immersive 3D effects.
+                    Perfect for lo-fi hip-hop, chill vibes, and ambient music creation.</p>
+
+                <!-- Copyright Notice Before Upload -->
+                <div class="upload-copyright-notice">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10" />
+                        <path d="M12 8v4" />
+                        <line x1="12" y1="16" x2="12.01" y2="16" />
+                    </svg>
+                    <p><strong>Copyright Notice:</strong> Lofify is for processing audio you have rights to use. Users
+                        are responsible for copyright compliance.</p>
+                </div>
+
+                <!-- Upload Area -->
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-content">
+                        <svg class="upload-icon animated-upload" width="64" height="64" viewBox="0 0 100 100"
+                            fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                                <linearGradient id="uploadGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#00d9ff;stop-opacity:1" />
+                                    <stop offset="100%" style="stop-color:#a855f7;stop-opacity:1" />
+                                </linearGradient>
+                            </defs>
+                            <rect class="upload-tray" x="20" y="70" width="60" height="10" rx="2"
+                                stroke="url(#uploadGradient)" stroke-width="3" fill="none" />
+                            <path class="upload-arrow" d="M 50 65 L 50 25 M 50 25 L 35 40 M 50 25 L 65 40"
+                                stroke="url(#uploadGradient)" stroke-width="4" stroke-linecap="round"
+                                stroke-linejoin="round" fill="none" />
+                        </svg>
+                        <h3>Drop your audio track here</h3>
+                        <p>or</p>
+
+                        <!-- Hidden file input for programmatic trigger -->
+                        <input type="file" id="audioFileInput" accept="audio/*,.mp3,.wav,.ogg,.flac,.m4a,.aac"
+                            style="display: none;">
+
+                        <!-- Prominent Browse Button -->
+                        <button class="btn-browse" id="browseFilesBtn" type="button">
+                            <svg class="button-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                <polyline points="17 8 12 3 7 8" />
+                                <line x1="12" y1="3" x2="12" y2="15" />
+                            </svg>
+                            Browse Files
+                        </button>
+
+                        <div class="upload-reminder">
+                            <small>📌 Make sure you have permission to modify this audio file</small>
+                        </div>
+
+                        <div class="upload-info">
+                            <span>Supports: MP3, WAV, OGG, FLAC, M4A</span>
+                            <span>Max size: 50MB</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Demo Option -->
+                <button class="btn-demo" id="useDemoBtn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polygon points="5 3 19 12 5 21 5 3" />
+                    </svg>
+                    Try with demo audio
+                </button>
+            </section>
+
+            <!-- Audio Preview Section -->
+            <section class="audio-section" id="audioSection" style="display: none;">
+                <div class="audio-card">
+                    <div class="audio-header">
+                        <div class="audio-info">
+                            <h3 id="fileName">Audio File</h3>
+                            <p id="fileInfo">Format: MP3 • Duration: 0:00</p>
+                        </div>
+                        <button class="btn-icon" id="removeFileBtn" title="Remove file">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <line x1="18" y1="6" x2="6" y2="18" />
+                                <line x1="6" y1="6" x2="18" y2="18" />
+                            </svg>
+                        </button>
+                    </div>
+
+                    <!-- Original Audio Player -->
+                    <div class="audio-player">
+                        <div class="audio-label">Original Audio</div>
+                        <canvas id="waveformOriginal" class="waveform-canvas"></canvas>
+                        <div class="player-controls">
+                            <button class="btn-play" id="playOriginalBtn">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                    <polygon points="5 3 19 12 5 21 5 3" />
+                                </svg>
+                            </button>
+                            <div class="progress-container">
+                                <div class="progress-bar" id="progressOriginal">
+                                    <div class="progress-fill"></div>
+                                </div>
+                                <div class="time-display">
+                                    <span id="currentTimeOriginal">0:00</span>
+                                    <span id="durationOriginal">0:00</span>
+                                </div>
+                            </div>
+                            <div class="volume-control">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+                                    <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
+                                    <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+                                </svg>
+                                <input type="range" id="volumeOriginal" min="0" max="100" value="70"
+                                    class="volume-slider">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Controls Panel -->
+                <div class="controls-card">
+                    <h3>Effect Controls</h3>
+
+                    <div class="control-group">
+                        <div class="control-header">
+                            <label for="speedSlider">Speed - Lo-Fi Tempo</label>
+                            <span class="control-value" id="speedValue">85%</span>
+                        </div>
+                        <input type="range" id="speedSlider" min="50" max="150" value="85" step="5" class="slider">
+                        <div class="control-markers">
+                            <span>50%</span>
+                            <span>100%</span>
+                            <span>150%</span>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <div class="control-header">
+                            <label for="reverbSlider">Lo-Fi Reverb</label>
+                            <span class="control-value" id="reverbValue">50%</span>
+                        </div>
+                        <input type="range" id="reverbSlider" min="0" max="100" value="50" step="5" class="slider">
+                        <div class="control-markers">
+                            <span>Dry</span>
+                            <span>Wet</span>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <div class="control-header">
+                            <label for="roomSizeSlider">
+                                Room Ambience
+                                <span class="tooltip-icon" title="Create vintage lo-fi room warmth and spatial depth">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2">
+                                        <circle cx="12" cy="12" r="10" />
+                                        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+                                        <line x1="12" y1="17" x2="12.01" y2="17" />
+                                    </svg>
+                                </span>
+                            </label>
+                            <span class="control-value" id="roomSizeValue">75%</span>
+                        </div>
+                        <input type="range" id="roomSizeSlider" min="50" max="100" value="75" step="5" class="slider">
+                        <div class="control-markers">
+                            <span>Small</span>
+                            <span>Large</span>
+                        </div>
+                    </div>
+
+                    <!-- Vintage Echo Control -->
+                    <div class="control-group-header">
+                        <div class="control-header">
+                            <label class="toggle-switch-label">
+                                <span class="label-text">Vintage Echo</span>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="enableEcho">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div id="echoControls" style="display: none;">
+                        <div class="control-group">
+                            <div class="control-header">
+                                <label for="echo">Echo Intensity</label>
+                                <span class="control-value" id="echo-value">0.40</span>
+                            </div>
+                            <input type="range" id="echo" min="0" max="1" step="0.01" value="0.4" class="slider">
+                            <div class="control-markers">
+                                <span>0.00</span>
+                                <span>0.50</span>
+                                <span>1.00</span>
+                            </div>
+                        </div>
+
+                        <!-- Echo Time Control -->
+                        <div class="control-group">
+                            <div class="control-header">
+                                <label for="echoTime">Echo Time</label>
+                                <span class="control-value" id="echoTimeValue">0.30s</span>
+                            </div>
+                            <input type="range" id="echoTime" min="0.1" max="1.0" step="0.05" value="0.3"
+                                class="slider">
+                            <div class="control-markers">
+                                <span>0.1s</span>
+                                <span>0.5s</span>
+                                <span>1.0s</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bass Boost Control -->
+                    <div class="control-group bass-control">
+                        <div class="control-header">
+                            <label for="bassBoostSlider">
+                                🔊 Lo-Fi Bass Boost
+                                <span class="tooltip-icon"
+                                    title="Enhance lo-fi bass for powerful chill vibes (40Hz-200Hz)">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2">
+                                        <circle cx="12" cy="12" r="10" />
+                                        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+                                        <line x1="12" y1="17" x2="12.01" y2="17" />
+                                    </svg>
+                                </span>
+                            </label>
+                            <span class="control-value" id="bassBoostValue">0%</span>
+                        </div>
+                        <input type="range" id="bassBoostSlider" min="0" max="100" value="0" step="5"
+                            class="slider bass-slider">
+                        <div class="control-markers">
+                            <span>None</span>
+                            <span>Deep</span>
+                        </div>
+                    </div>
+
+                    <!-- Bass Frequency Control -->
+                    <div class="control-group bass-frequency-control">
+                        <div class="control-header">
+                            <label for="bassFrequencySlider">
+                                🎧 Bass Frequency
+                                <span class="tooltip-icon"
+                                    title="Choose the frequency range to boost (lower = deeper bass, higher = tighter bass)">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2">
+                                        <circle cx="12" cy="12" r="10" />
+                                        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+                                        <line x1="12" y1="17" x2="12.01" y2="17" />
+                                    </svg>
+                                </span>
+                            </label>
+                            <span class="control-value" id="bassFrequencyValue">100Hz</span>
+                        </div>
+                        <input type="range" id="bassFrequencySlider" min="40" max="200" value="100" step="10"
+                            class="slider">
+                        <div class="control-markers">
+                            <span>40Hz</span>
+                            <span>100Hz</span>
+                            <span>200Hz</span>
+                        </div>
+                    </div>
+
+                    <!-- Bass Reduction Control -->
+                    <div class="control-group-header">
+                        <div class="control-header">
+                            <label class="toggle-switch-label">
+                                <span class="label-text">
+                                    📉 Bass Reduction
+                                    <span class="tooltip-icon" title="Reduce bass for a thinner, radio-like sound">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2">
+                                            <circle cx="12" cy="12" r="10" />
+                                            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+                                            <line x1="12" y1="17" x2="12.01" y2="17" />
+                                        </svg>
+                                    </span>
+                                </span>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="enableBassCut">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div id="bassCutControls" style="display: none;">
+                        <div class="control-group">
+                            <div class="control-header">
+                                <label for="bassCutSlider">Reduction Amount</label>
+                                <span class="control-value" id="bassCutValue">0%</span>
+                            </div>
+                            <input type="range" id="bassCutSlider" min="0" max="100" value="0" step="5" class="slider">
+                            <div class="control-markers">
+                                <span>0%</span>
+                                <span>50%</span>
+                                <span>100%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 3D Audio Effects -->
+                    <div class="effects-3d-section">
+                        <div class="effects-3d-header">
+                            <h3>
+                                <svg class="label-icon icon-3d" width="24" height="24" viewBox="0 0 100 100" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <circle class="rotating-sphere" cx="50" cy="50" r="30" stroke="#00d9ff"
+                                        stroke-width="2" fill="none" />
+                                    <ellipse class="rotating-ring" cx="50" cy="50" rx="40" ry="15" stroke="#a855f7"
+                                        stroke-width="2" fill="none" />
+                                    <circle class="pulse-center" cx="50" cy="50" r="8" fill="#ff006e" />
+                                </svg>
+                                3D Audio Effects
+                            </h3>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="enable3DEffects">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="effects-3d-content" id="effects3DContent" style="display: none;">
+                            <!-- Effect Type Selection -->
+                            <div class="control-group">
+                                <label class="control-header-label">Effect Type</label>
+                                <div class="effect-type-grid">
+                                    <label class="effect-type-card">
+                                        <input type="radio" name="effectType" value="8d_audio" checked>
+                                        <div class="effect-type-content">
+                                            <span class="effect-icon">🎪</span>
+                                            <span class="effect-name">8D Audio</span>
+                                            <span class="effect-desc">Circular rotation</span>
+                                        </div>
+                                    </label>
+                                    <label class="effect-type-card">
+                                        <input type="radio" name="effectType" value="binaural">
+                                        <div class="effect-type-content">
+                                            <span class="effect-icon">🎧</span>
+                                            <span class="effect-name">Binaural</span>
+                                            <span class="effect-desc">3D positioning</span>
+                                        </div>
+                                    </label>
+                                    <label class="effect-type-card">
+                                        <input type="radio" name="effectType" value="surround">
+                                        <div class="effect-type-content">
+                                            <span class="effect-icon">🌍</span>
+                                            <span class="effect-name">Surround</span>
+                                            <span class="effect-desc">360° sound</span>
+                                        </div>
+                                    </label>
+                                    <label class="effect-type-card">
+                                        <input type="radio" name="effectType" value="panning_3d">
+                                        <div class="effect-type-content">
+                                            <span class="effect-icon">🔄</span>
+                                            <span class="effect-name">3D Panning</span>
+                                            <span class="effect-desc">Custom position</span>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- 8D Audio Options -->
+                            <div class="effect-options" id="options8D">
+                                <div class="control-group">
+                                    <div class="control-header">
+                                        <label for="rotationSpeed">Rotation Speed</label>
+                                        <span class="control-value" id="rotationSpeedValue">1.5x</span>
+                                    </div>
+                                    <input type="range" id="rotationSpeed" min="0.5" max="3.0" value="1.5" step="0.1"
+                                        class="slider">
+                                    <div class="control-markers">
+                                        <span>0.5x</span>
+                                        <span>1.5x</span>
+                                        <span>3.0x</span>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-header-label">Direction</label>
+                                    <div class="direction-toggle">
+                                        <button class="direction-btn active" data-direction="clockwise">
+                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                                stroke="currentColor" stroke-width="2">
+                                                <circle cx="12" cy="12" r="10" />
+                                                <polyline points="12 6 12 12 16 14" />
+                                            </svg>
+                                            Clockwise
+                                        </button>
+                                        <button class="direction-btn" data-direction="counter-clockwise">
+                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                                stroke="currentColor" stroke-width="2">
+                                                <circle cx="12" cy="12" r="10" />
+                                                <polyline points="12 6 12 12 8 14" />
+                                            </svg>
+                                            Counter-CW
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="visual-indicator">
+                                    <canvas id="rotation8DCanvas" width="120" height="120"></canvas>
+                                </div>
+                            </div>
+
+                            <!-- Binaural Options -->
+                            <div class="effect-options" id="optionsBinaural" style="display: none;">
+                                <div class="control-group">
+                                    <div class="control-header">
+                                        <label for="binauralIntensity">Intensity</label>
+                                        <span class="control-value" id="binauralIntensityValue">75%</span>
+                                    </div>
+                                    <input type="range" id="binauralIntensity" min="0" max="100" value="75" step="5"
+                                        class="slider">
+                                    <div class="control-markers">
+                                        <span>0%</span>
+                                        <span>50%</span>
+                                        <span>100%</span>
+                                    </div>
+                                </div>
+                                <div class="visual-indicator binaural-indicator">
+                                    <div class="binaural-icon">🎧</div>
+                                    <p>3D spatial positioning active</p>
+                                </div>
+                            </div>
+
+                            <!-- Surround Options -->
+                            <div class="effect-options" id="optionsSurround" style="display: none;">
+                                <div class="control-group">
+                                    <label class="control-header-label" for="surroundPattern">Pattern</label>
+                                    <select id="surroundPattern" class="form-control">
+                                        <option value="theater">Theater (Front &amp; Sides)</option>
+                                        <option value="circular">Circular (360° Rotation)</option>
+                                        <option value="static">Static (Omnidirectional)</option>
+                                    </select>
+                                </div>
+                                <div class="control-group">
+                                    <div class="control-header">
+                                        <label for="surroundIntensity">Intensity</label>
+                                        <span class="control-value" id="surroundIntensityValue">75%</span>
+                                    </div>
+                                    <input type="range" id="surroundIntensity" min="0" max="100" value="75" step="5"
+                                        class="slider">
+                                    <div class="control-markers">
+                                        <span>0%</span>
+                                        <span>50%</span>
+                                        <span>100%</span>
+                                    </div>
+                                </div>
+                                <div class="visual-indicator">
+                                    <canvas id="surroundCanvas" width="120" height="120"></canvas>
+                                </div>
+                            </div>
+
+                            <!-- 3D Panning Options -->
+                            <div class="effect-options" id="optionsPanning" style="display: none;">
+                                <div class="control-group">
+                                    <div class="control-header">
+                                        <label for="panHorizontal">Horizontal Position</label>
+                                        <span class="control-value" id="panHorizontalValue">Center</span>
+                                    </div>
+                                    <input type="range" id="panHorizontal" min="-1" max="1" value="0" step="0.1"
+                                        class="slider">
+                                    <div class="control-markers">
+                                        <span>Left</span>
+                                        <span>Center</span>
+                                        <span>Right</span>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <div class="control-header">
+                                        <label for="panVertical">Vertical Position</label>
+                                        <span class="control-value" id="panVerticalValue">Center</span>
+                                    </div>
+                                    <input type="range" id="panVertical" min="-1" max="1" value="0" step="0.1"
+                                        class="slider">
+                                    <div class="control-markers">
+                                        <span>Below</span>
+                                        <span>Center</span>
+                                        <span>Above</span>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <div class="control-header">
+                                        <label for="panDepth">Depth</label>
+                                        <span class="control-value" id="panDepthValue">Medium</span>
+                                    </div>
+                                    <input type="range" id="panDepth" min="0" max="1" value="0.5" step="0.1"
+                                        class="slider">
+                                    <div class="control-markers">
+                                        <span>Far</span>
+                                        <span>Medium</span>
+                                        <span>Near</span>
+                                    </div>
+                                </div>
+                                <div class="visual-indicator">
+                                    <canvas id="panning3DCanvas" width="140" height="140"></canvas>
+                                </div>
+                            </div>
+
+                            <!-- Master 3D Intensity -->
+                            <div class="control-group master-intensity">
+                                <div class="control-header">
+                                    <label for="master3DIntensity">
+                                        <strong>Master 3D Intensity</strong>
+                                    </label>
+                                    <span class="control-value" id="master3DIntensityValue">80%</span>
+                                </div>
+                                <input type="range" id="master3DIntensity" min="0" max="100" value="80" step="5"
+                                    class="slider">
+                                <div class="control-markers">
+                                    <span>Off</span>
+                                    <span>Medium</span>
+                                    <span>Max</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Presets -->
+                    <div class="presets-section">
+                        <h4>Quick Presets</h4>
+                        <div class="presets-grid">
+                            <button class="preset-btn" data-preset="light">Light Lo-Fi</button>
+                            <button class="preset-btn active" data-preset="standard">Classic Lo-Fi</button>
+                            <button class="preset-btn" data-preset="heavy">Deep Lo-Fi</button>
+                            <button class="preset-btn" data-preset="extreme">Extreme Lo-Fi</button>
+                            <button class="preset-btn" data-preset="nightcore">Lo-Fi Night</button>
+                            <button class="preset-btn" data-preset="8d_slowed">🎪 8D Slowed</button>
+                            <button class="preset-btn" data-preset="binaural_reverb">🎧 Binaural Reverb</button>
+                            <button class="preset-btn" data-preset="surround_space">🌍 Surround Space</button>
+                            <button class="preset-btn" data-preset="bass_booster">🔊 Lo-Fi Bass Boost</button>
+                            <button class="preset-btn" data-preset="deep_bass">💥 Lo-Fi Deep Bass</button>
+                            <button class="preset-btn" data-preset="bass_reverb">🎵 Bass &amp; Reverb</button>
+                            <button class="preset-btn" data-preset="sub_boost">⚡ Sub Boost</button>
+                            <button class="preset-btn preset-custom" id="savePresetBtn">Save Custom</button>
+                        </div>
+                    </div>
+
+                    <!-- Auto-Set Button -->
+                    <div class="auto-set-container" style="margin-bottom: 20px;">
+                        <button class="btn-auto-set" id="autoSetBtn"
+                            title="Automatically configure settings based on audio analysis">
+                            <svg class="button-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <path
+                                    d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
+                            </svg>
+                            🪄 Auto-Set Settings
+                        </button>
+                    </div>
+
+                    <!-- Generate Button - PROMINENTLY VISIBLE -->
+                    <div class="generate-button-container">
+                        <button class="btn-generate" id="generateBtn">
+                            <svg class="button-icon icon-generate" width="24" height="24" viewBox="0 0 100 100"
+                                fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path class="sparkle-star sparkle-1"
+                                    d="M 50 20 L 52 30 L 62 32 L 52 34 L 50 44 L 48 34 L 38 32 L 48 30 Z"
+                                    fill="currentColor" />
+                                <path class="sparkle-star sparkle-2"
+                                    d="M 70 40 L 71 45 L 76 46 L 71 47 L 70 52 L 69 47 L 64 46 L 69 45 Z"
+                                    fill="currentColor" />
+                                <path class="sparkle-star sparkle-3"
+                                    d="M 30 60 L 31 65 L 36 66 L 31 67 L 30 72 L 29 67 L 24 66 L 29 65 Z"
+                                    fill="currentColor" />
+                                <circle class="sparkle-center" cx="50" cy="50" r="12" fill="currentColor" />
+                            </svg>
+                            ✨ GENERATE LO-FI TRACK
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Processing Status -->
+                <div class="processing-card" id="processingCard" style="display: none;">
+                    <div class="processing-content">
+                        <div class="spinner"></div>
+                        <h3 id="processingStatus">Processing audio...</h3>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar-fill" id="processingProgress"></div>
+                        </div>
+                        <p id="processingStage">Loading audio...</p>
+                        <p class="processing-time" id="processingTime">Estimated time: 10s</p>
+                        <button class="btn-secondary" id="cancelProcessingBtn">Cancel</button>
+                    </div>
+                </div>
+
+                <!-- Output Section -->
+                <div class="output-card" id="outputCard" style="display: none;">
+                    <div class="output-header">
+                        <div>
+                            <h3>Processed Audio</h3>
+                            <p id="outputInfo">New duration: 0:00 • Estimated size: 0 MB</p>
+                        </div>
+                        <div class="output-actions">
+                            <button class="btn-icon" id="compareToggleBtn" title="Compare A/B">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <polyline points="17 11 12 6 7 11" />
+                                    <polyline points="17 18 12 13 7 18" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Processed Audio Player -->
+                    <div class="audio-player">
+                        <div class="audio-label success">Processed Audio</div>
+                        <canvas id="waveformProcessed" class="waveform-canvas"></canvas>
+                        <div class="player-controls">
+                            <button class="btn-play" id="playProcessedBtn">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                    <polygon points="5 3 19 12 5 21 5 3" />
+                                </svg>
+                            </button>
+                            <div class="progress-container">
+                                <div class="progress-bar" id="progressProcessed">
+                                    <div class="progress-fill"></div>
+                                </div>
+                                <div class="time-display">
+                                    <span id="currentTimeProcessed">0:00</span>
+                                    <span id="durationProcessed">0:00</span>
+                                </div>
+                            </div>
+                            <div class="volume-control">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+                                    <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
+                                    <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+                                </svg>
+                                <input type="range" id="volumeProcessed" min="0" max="100" value="70"
+                                    class="volume-slider">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Download Options Section -->
+                    <div class="download-options-section">
+                        <div class="download-header">
+                            <h4>📥 Download Options</h4>
+                            <p class="download-subtitle">Download unlimited times in your preferred format</p>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="action-buttons">
+                            <button class="btn-download-primary" id="downloadWavBtn"
+                                title="Perfect quality - Lossless uncompressed audio. Download multiple times without quality loss."
+                                disabled>
+                                <svg class="button-icon icon-download" width="24" height="24" viewBox="0 0 100 100"
+                                    fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <rect class="download-tray" x="20" y="75" width="60" height="10" rx="2"
+                                        stroke="currentColor" stroke-width="4" fill="none" />
+                                    <path class="download-arrow" d="M 50 20 L 50 65 M 50 65 L 35 50 M 50 65 L 65 50"
+                                        stroke="currentColor" stroke-width="5" stroke-linecap="round"
+                                        stroke-linejoin="round" fill="none" />
+                                </svg>
+                                Download as WAV
+                            </button>
+                            <button class="btn-download-secondary" id="downloadMp3Btn"
+                                title="High quality compressed format (256kbps equivalent). Smaller file size, great quality. Download as many times as you want."
+                                disabled>
+                                <svg class="button-icon icon-download" width="20" height="20" viewBox="0 0 100 100"
+                                    fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <rect class="download-tray" x="20" y="75" width="60" height="10" rx="2"
+                                        stroke="currentColor" stroke-width="4" fill="none" />
+                                    <path class="download-arrow" d="M 50 20 L 50 65 M 50 65 L 35 50 M 50 65 L 65 50"
+                                        stroke="currentColor" stroke-width="5" stroke-linecap="round"
+                                        stroke-linejoin="round" fill="none" />
+                                </svg>
+                                Download as MP3
+                            </button>
+                        </div>
+
+                        <div class="download-info-box">
+                            <div class="download-info-item">
+                                <span class="info-label">Status:</span>
+                                <span class="info-value" id="downloadStatus">Ready to download ✓</span>
+                            </div>
+                            <div class="download-info-item">
+                                <span class="info-label">Downloads:</span>
+                                <span class="info-value">Unlimited - click as many times as you want!</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="secondary-actions">
+                        <button class="btn-secondary" id="shareBtn">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <circle cx="18" cy="5" r="3" />
+                                <circle cx="6" cy="12" r="3" />
+                                <circle cx="18" cy="19" r="3" />
+                                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+                                <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+                            </svg>
+                            Share
+                        </button>
+                        <button class="btn-secondary" id="resetBtn">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <polyline points="1 4 1 10 7 10" />
+                                <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10" />
+                            </svg>
+                            Process Another
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Copyright-Free Music Resources Section -->
+            <section class="music-resources-section">
+                <div class="resources-header">
+                    <h2>🎵 Copyright-Free Lo-Fi Music Sources</h2>
+                    <p class="resources-subtitle">Use these trusted platforms for legal, royalty-free music to create
+                        lo-fi tracks</p>
+                </div>
+
+                <div class="resources-grid">
+                    <!-- Free Resources -->
+                    <div class="resource-category">
+                        <h3>Free Music Sources</h3>
+                        <div class="resource-cards">
+                            <a href="https://www.youtube.com/audiolibrary" target="_blank" class="resource-card">
+                                <div class="resource-icon">🎬</div>
+                                <h4>YouTube Audio Library</h4>
+                                <p>Free copyright-safe music for videos</p>
+                                <span class="resource-license">Various licenses</span>
+                            </a>
+                            <a href="https://pixabay.com/music" target="_blank" class="resource-card">
+                                <div class="resource-icon">🖼️</div>
+                                <h4>Pixabay</h4>
+                                <p>Free music with Creative Commons</p>
+                                <span class="resource-license">CC0 (Public Domain)</span>
+                            </a>
+                            <a href="https://freesound.org" target="_blank" class="resource-card">
+                                <div class="resource-icon">🔊</div>
+                                <h4>Freesound.org</h4>
+                                <p>500K+ Creative Commons sounds</p>
+                                <span class="resource-license">Creative Commons</span>
+                            </a>
+                            <a href="https://mixkit.co/free-stock-music" target="_blank" class="resource-card">
+                                <div class="resource-icon">🎧</div>
+                                <h4>MixKit</h4>
+                                <p>Free music, effects, and stock media</p>
+                                <span class="resource-license">MixKit License</span>
+                            </a>
+                            <a href="https://www.freemusicarchive.org" target="_blank" class="resource-card">
+                                <div class="resource-icon">📚</div>
+                                <h4>Free Music Archive</h4>
+                                <p>Database with various licenses</p>
+                                <span class="resource-license">Various CC</span>
+                            </a>
+                            <a href="https://ccmixter.org" target="_blank" class="resource-card">
+                                <div class="resource-icon">🎵</div>
+                                <h4>ccMixter</h4>
+                                <p>Creative Commons music for projects</p>
+                                <span class="resource-license">Creative Commons</span>
+                            </a>
+                            <a href="https://www.bensound.com" target="_blank" class="resource-card">
+                                <div class="resource-icon">🎹</div>
+                                <h4>Bensound</h4>
+                                <p>Free music with CC attribution</p>
+                                <span class="resource-license">CC with attribution</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Premium Resources -->
+                    <div class="resource-category">
+                        <h3>Premium Music Sources</h3>
+                        <div class="resource-cards premium">
+                            <a href="https://artlist.io" target="_blank" class="resource-card premium-card">
+                                <div class="resource-icon">⭐</div>
+                                <h4>Artlist</h4>
+                                <p>Unlimited licenses</p>
+                                <span class="resource-price">$99/year</span>
+                            </a>
+                            <a href="https://www.epidemicsound.com" target="_blank" class="resource-card premium-card">
+                                <div class="resource-icon">💎</div>
+                                <h4>Epidemic Sound</h4>
+                                <p>Professional library</p>
+                                <span class="resource-price">$9.99/month</span>
+                            </a>
+                            <a href="https://www.soundstripe.com" target="_blank" class="resource-card premium-card">
+                                <div class="resource-icon">🎼</div>
+                                <h4>Soundstripe</h4>
+                                <p>Annual subscription</p>
+                                <span class="resource-price">$119/year</span>
+                            </a>
+                            <a href="https://www.premiumbeat.com" target="_blank" class="resource-card premium-card">
+                                <div class="resource-icon">🏆</div>
+                                <h4>PremiumBeat</h4>
+                                <p>Curated royalty-free music</p>
+                                <span class="resource-price">Per track</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Info Section -->
+            <section class="info-section">
+                <div class="info-grid">
+                    <div class="info-card">
+                        <div class="info-icon">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <circle cx="12" cy="12" r="10" />
+                                <line x1="12" y1="16" x2="12" y2="12" />
+                                <line x1="12" y1="8" x2="12.01" y2="8" />
+                            </svg>
+                        </div>
+                        <h3>What is Lofify?</h3>
+                        <p>Lofify is a professional lo-fi music creator that slows down tempo, adds vintage reverb, and
+                            applies spatial 3D effects. Perfect for creating lo-fi hip-hop, chill vibes, and nostalgic
+                            ambient music.</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="info-icon">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                                <polyline points="22 4 12 14.01 9 11.01" />
+                            </svg>
+                        </div>
+                        <h3>Best Lo-Fi Practices</h3>
+                        <p>For optimal lo-fi results, use high-quality source files. Songs with strong vocals and
+                            melodies work best. Start with the Classic Lo-Fi preset and adjust to your vibe.</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="info-icon">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <rect x="3" y="3" width="7" height="7" />
+                                <rect x="14" y="3" width="7" height="7" />
+                                <rect x="14" y="14" width="7" height="7" />
+                                <rect x="3" y="14" width="7" height="7" />
+                            </svg>
+                        </div>
+                        <h3>Keyboard Shortcuts</h3>
+                        <p>Space: Play/Pause • R: Reset • D: Download • ← →: Seek • ↑ ↓: Volume • ?: Show all shortcuts
+                        </p>
+                    </div>
+                </div>
+
+                <!-- FAQ -->
+                <details class="faq-section">
+                    <summary>Frequently Asked Questions</summary>
+                    <div class="faq-content">
+                        <div class="faq-item">
+                            <h4>What audio formats are supported?</h4>
+                            <p>We support MP3, WAV, OGG, FLAC, and M4A files up to 50MB in size.</p>
+                        </div>
+                        <div class="faq-item">
+                            <h4>Is my audio file uploaded to a server?</h4>
+                            <p>No! All processing happens locally in your browser. Your files never leave your device,
+                                ensuring complete privacy.</p>
+                        </div>
+                        <div class="faq-item">
+                            <h4>Can I use this for commercial purposes?</h4>
+                            <p>You can use the tool freely, but ensure you have the rights to the original audio
+                                content.</p>
+                        </div>
+                        <div class="faq-item">
+                            <h4>Why does processing take time?</h4>
+                            <p>Audio processing requires significant computation. We apply speed changes, reverb, and
+                                quality preservation algorithms to ensure the best output.</p>
+                        </div>
+                    </div>
+                </details>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <p>&copy; 2025 Lofify. All rights reserved.</p>
+                <div class="footer-links">
+                    <a href="#" id="termsLink">Terms of Service</a>
+                    <a href="#" id="copyrightLink">Copyright &amp; Disclaimer</a>
+                    <a href="#" id="privacyLink">Privacy Policy</a>
+                    <a href="#" id="fairUseLink">Fair Use Info</a>
+                    <a href="#" id="musicResourcesLink">Lofify Music Resources</a>
+                    <a href="#" id="contactLink">Contact</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modals -->
+    <div class="modal" id="helpModal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Keyboard Shortcuts</h3>
+                <button class="btn-icon" id="closeHelpModal">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="shortcut-list">
+                    <div class="shortcut-item">
+                        <kbd>Space</kbd>
+                        <span>Play / Pause</span>
+                    </div>
+                    <div class="shortcut-item">
+                        <kbd>R</kbd>
+                        <span>Reset</span>
+                    </div>
+                    <div class="shortcut-item">
+                        <kbd>D</kbd>
+                        <span>Download</span>
+                    </div>
+                    <div class="shortcut-item">
+                        <kbd>G</kbd>
+                        <span>Generate</span>
+                    </div>
+                    <div class="shortcut-item">
+                        <kbd>←</kbd> <kbd>→</kbd>
+                        <span>Seek backward / forward</span>
+                    </div>
+                    <div class="shortcut-item">
+                        <kbd>↑</kbd> <kbd>↓</kbd>
+                        <span>Volume up / down</span>
+                    </div>
+                    <div class="shortcut-item">
+                        <kbd>?</kbd>
+                        <span>Show this help</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="shareModal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Share Your Creation</h3>
+                <button class="btn-icon" id="closeShareModal">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="share-buttons">
+                    <button class="share-button twitter" id="shareTwitter">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                            <path
+                                d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z" />
+                        </svg>
+                        Share on Twitter
+                    </button>
+                    <button class="share-button tiktok" id="shareTikTok">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5" />
+                        </svg>
+                        Share on TikTok
+                    </button>
+                    <button class="share-button instagram" id="shareInstagram">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+                            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+                            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+                        </svg>
+                        Share on Instagram
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Copyright Disclaimer Modal (First Visit) -->
+    <div class="modal" id="copyrightDisclaimerModal" style="display: none;">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3>⚠️ Important Copyright Notice</h3>
+            </div>
+            <div class="modal-body">
+                <div class="disclaimer-content">
+                    <div class="disclaimer-section">
+                        <h4>Welcome to Lofify - Lo-Fi Music Creator</h4>
+                        <p>Before you begin, please review these important terms:</p>
+                    </div>
+
+                    <div class="disclaimer-section highlight">
+                        <h4>🔒 User Responsibility</h4>
+                        <p><strong>Lofify is designed for processing audio files you have the right to use.</strong>
+                            Users are responsible for ensuring they have proper rights or licenses to use any audio they
+                            upload.</p>
+                        <p>Audio processing (slowing, reverb, 3D effects) <strong>does not make copyrighted material
+                                copyright-free</strong>.</p>
+                    </div>
+
+                    <div class="disclaimer-section">
+                        <h4>⚖️ Fair Use Information</h4>
+                        <p>Fair use (17 U.S.C. § 107) permits limited use of copyrighted material for purposes such as
+                            criticism, comment, news reporting, teaching, scholarship, or research. However, <strong>not
+                                all uses qualify as fair use</strong>. Users must determine for themselves whether their
+                            use qualifies under the law.</p>
+                    </div>
+
+                    <div class="disclaimer-section">
+                        <h4>✓ Copyright-Free Music</h4>
+                        <p>We recommend using copyright-free music from trusted sources such as:</p>
+                        <ul>
+                            <li>YouTube Audio Library</li>
+                            <li>Pixabay</li>
+                            <li>Freesound.org</li>
+                            <li>MixKit</li>
+                            <li>Creative Commons Music</li>
+                        </ul>
+                        <p><a href="#" id="viewMusicResourcesLink" class="link-primary">View all copyright-free music
+                                sources →</a></p>
+                    </div>
+
+                    <div class="disclaimer-section">
+                        <h4>📋 By Using This Tool</h4>
+                        <p>You acknowledge that:</p>
+                        <ul>
+                            <li>You have the right to upload and modify the audio files</li>
+                            <li>You understand that processing does not change copyright status</li>
+                            <li>You are responsible for all copyright compliance</li>
+                            <li>You will use copyright-free sources when possible</li>
+                        </ul>
+                    </div>
+
+                    <label class="disclaimer-checkbox">
+                        <input type="checkbox" id="acceptTermsCheckbox">
+                        <span>I understand and accept these terms</span>
+                    </label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-primary btn-large" id="acceptDisclaimerBtn" disabled>Continue to App</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Legal Information Modal -->
+    <div class="modal" id="legalModal" style="display: none;">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3 id="legalModalTitle">Legal Information</h3>
+                <button class="btn-icon" id="closeLegalModal">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body" id="legalModalBody">
+                <!-- Content will be dynamically inserted -->
+            </div>
+        </div>
+    </div>
+
+    <div class="notification" id="notification" style="display: none;">
+        <div class="notification-content">
+            <svg class="notification-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                <polyline points="22 4 12 14.01 9 11.01" />
+            </svg>
+            <span id="notificationText">Success!</span>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
